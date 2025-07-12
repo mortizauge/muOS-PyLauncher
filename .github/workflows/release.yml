@@ -3,7 +3,7 @@ name: Build and Release .muxzip
 on:
   push:
     tags:
-      - 'v*'  # Trigger only on tags like v1.0.0
+      - 'v*'
 
 jobs:
   release:
@@ -15,16 +15,17 @@ jobs:
 
     - name: Prepare .muxzip package structure
       run: |
+        # Create folder structure
         mkdir -p package/mnt/mmc/MUOS/application/PyLauncher
         mkdir -p package/opt/muos/default/MUOS/theme/active/glyph/muxapp
 
-        # Copy launcher files
-        rsync -av --exclude='.git' --exclude='README.md' --exclude='.github' --exclude='build' ./ package/mnt/mmc/MUOS/application/PyLauncher/
+        # Copy all source files to PyLauncher, excluding unwanted files
+        rsync -av --exclude='.git' --exclude='README.md' --exclude='.github' --exclude='build' --exclude='pylauncher.png' ./ package/mnt/mmc/MUOS/application/PyLauncher/
 
-        # Copy icon (assumes it's in project root with name pylauncher.png)
+        # Copy only the icon to the correct location
         cp pylauncher.png package/opt/muos/default/MUOS/theme/active/glyph/muxapp/
 
-        # Create the final .muxzip
+        # Create the .muxzip from inside the 'package' folder to avoid extra nesting
         cd package
         zip -r ../PyLauncher.muxzip .
         cd ..
