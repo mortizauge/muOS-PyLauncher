@@ -16,8 +16,13 @@ jobs:
     - name: Prepare .muxapp package
       run: |
         mkdir -p build
-        zip -r build/PyLauncher.zip . -x ".git/*" "README.md" ".github/*" "build/*"
-        mv build/PyLauncher.zip build/PyLauncher.muxapp
+        mkdir -p build/PyLauncher
+        # Copy everything except .git, README.md, .github and build itself into build/PyLauncher
+        rsync -av --exclude='.git' --exclude='README.md' --exclude='.github' --exclude='build' ./ build/PyLauncher/
+        # Zip the PyLauncher folder itself, not solo su contenido
+        cd build
+        zip -r PyLauncher.zip PyLauncher
+        mv PyLauncher.zip PyLauncher.muxapp
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
