@@ -19,13 +19,19 @@ jobs:
         mkdir -p package/mnt/mmc/MUOS/application/PyLauncher
         mkdir -p package/opt/muos/default/MUOS/theme/active/glyph/muxapp
 
-        # Copy all source files to PyLauncher, excluding unwanted files
-        rsync -av --exclude='.git' --exclude='README.md' --exclude='.github' --exclude='build' --exclude='pylauncher.png' ./ package/mnt/mmc/MUOS/application/PyLauncher/
+        # Copy files to PyLauncher, avoiding extra nesting
+        rsync -av --exclude='.git' \
+                  --exclude='README.md' \
+                  --exclude='.github' \
+                  --exclude='build' \
+                  --exclude='package' \
+                  --exclude='pylauncher.png' \
+                  ./ package/mnt/mmc/MUOS/application/PyLauncher/
 
-        # Copy only the icon to the correct location
+        # Copy only the icon
         cp pylauncher.png package/opt/muos/default/MUOS/theme/active/glyph/muxapp/
 
-        # Create the .muxzip from inside the 'package' folder to avoid extra nesting
+        # Create the .muxzip without including 'package' folder inside
         cd package
         zip -r ../PyLauncher.muxzip .
         cd ..
