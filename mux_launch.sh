@@ -1,4 +1,7 @@
 #!/bin/bash
+# HELP: PyLauncher
+# ICON: pylauncher
+# GRID: PyLauncher
 
 # Source muOS functions if available
 if [ -f /opt/muos/script/var/func.sh ]; then

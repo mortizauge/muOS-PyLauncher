@@ -180,7 +180,8 @@ def run_script(path):
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         bufsize=1,
-        universal_newlines=True
+        universal_newlines=True,
+        cwd=os.path.dirname(path)
     )
 
     thread = threading.Thread(target=reader, args=(process.stdout,))
@@ -233,9 +234,9 @@ def run_script(path):
         gr.draw_paint()
         time.sleep(2)
 
-    gr.button_circle((290, 460), "B", "Return")
+    gr.button_circle((290, 460), "B", "Back")
     gr.draw_paint()
-
+    
     while True:
         input.check()
         if input.key("B"):
@@ -276,7 +277,9 @@ def inspect_script(path):
         for line in lines[scroll_pos:scroll_pos + max_lines]:
             gr.draw_text((10, y), line.rstrip())
             y += 20
-
+        
+        gr.button_triangle((30, 460), "up", "Scroll Up")
+        gr.button_triangle((133, 460), "down", "Scroll Down")
         gr.button_circle((290, 460), "B", "Back")
         gr.draw_paint()
 

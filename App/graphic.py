@@ -2,6 +2,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "libs"))
 from PIL import Image, ImageDraw, ImageFont
+import re
 
 from fcntl import ioctl
 import mmap
@@ -60,7 +61,8 @@ def draw_clear():
 
 def draw_text(position, text, font=15, color='white', **kwargs):
 	global activeDraw
-	activeDraw.text(position, text, font=fontFile[font], fill=color, **kwargs)
+	clean_text = remove_emojis(text)
+	activeDraw.text(position, clean_text, font=fontFile[font], fill=color, **kwargs)
 
 def draw_rectangle(position, fill=None, outline=None, width=1):
 	global activeDraw
@@ -73,6 +75,20 @@ def draw_rectangle_r(position, radius, fill=None, outline=None):
 def draw_circle(position, radius, fill=None, outline='white'):
 	global activeDraw
 	activeDraw.ellipse([position[0]-radius, position[1]-radius, position[0]+radius, position[1]+radius], fill=fill, outline=outline)
+    
+def draw_triangle(center, size, direction="up", fill="white"):
+	global activeDraw
+	x, y = center
+	half = size // 2
+
+	if direction == "up":
+		points = [(x, y - half), (x - half, y + half), (x + half, y + half)]
+	elif direction == "down":
+		points = [(x, y + half), (x - half, y - half), (x + half, y - half)]
+	else:
+		raise ValueError("Dirección no válida. Usa 'up' o 'down'.")
+
+	activeDraw.polygon(points, fill=fill)
 
 def row_list(text, pos, width, selected):
     fill_color = colorBlue if selected else colorGrayL1
@@ -83,6 +99,30 @@ def button_circle(pos, button, text):
 	draw_circle(pos, 15, fill=colorBlueD1, outline=None)
 	draw_text(pos, button, anchor="mm")
 	draw_text((pos[0] + 20, pos[1]), text, font=13, anchor="lm")
+
+def button_triangle(pos, direction, text):
+	# Dibuja un triángulo (flecha) de tamaño fijo
+	triangle_size = 20
+	draw_triangle(pos, triangle_size, direction=direction, fill=colorBlueD1)
+
+	# Dibuja el texto a la derecha del triángulo
+	draw_text((pos[0] + 20, pos[1]), text, font=13, anchor="lm")
+    
+
+def remove_emojis(text):
+	emoji_pattern = re.compile(
+		"["
+		u"\U0001F600-\U0001F64F"
+		u"\U0001F300-\U0001F5FF"
+		u"\U0001F680-\U0001F6FF"
+		u"\U0001F1E0-\U0001F1FF"
+		u"\U00002700-\U000027BF"
+		u"\U0001F900-\U0001F9FF"
+		u"\U00002600-\U000026FF"
+		u"\U00002500-\U00002BEF"
+		u"\U0001FA70-\U0001FAFF"
+	"]+", flags=re.UNICODE)
+	return emoji_pattern.sub(r'', text)
 
 def draw_log(text, fill="Black", outline="black"):
     rect_x0, rect_y0, rect_x1, rect_y1 = 170, 200, 470, 280
