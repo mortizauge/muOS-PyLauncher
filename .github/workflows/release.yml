@@ -1,0 +1,27 @@
+name: Build and Release MuxApp
+
+on:
+  push:
+    tags:
+      - 'v*'  # Se activa cuando haces un tag tipo v1.0.0
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create .muxapp package
+        run: |
+          mkdir build
+          zip -r build/PyLauncher.zip . -x "*.git*" "README.md"
+          mv build/PyLauncher.zip build/PyLauncher.muxapp
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/PyLauncher.muxapp
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
