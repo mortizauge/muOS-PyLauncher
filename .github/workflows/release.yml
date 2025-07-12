@@ -1,4 +1,4 @@
-name: Build and Release .muxapp
+name: Build and Release .muxzip
 
 on:
   push:
@@ -13,19 +13,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Prepare .muxapp package
+    - name: Prepare .muxzip package structure
       run: |
-        mkdir -p build
-        mkdir -p build/PyLauncher
-        # Copy everything except .git, README.md, .github and build itself into build/PyLauncher
-        rsync -av --exclude='.git' --exclude='README.md' --exclude='.github' --exclude='build' ./ build/PyLauncher/
-        # Zip the PyLauncher folder itself, not solo su contenido
-        cd build
-        zip -r PyLauncher.zip PyLauncher
-        mv PyLauncher.zip PyLauncher.muxapp
+        mkdir -p package/mnt/mmc/MUOS/application/PyLauncher
+        mkdir -p package/opt/muos/default/MUOS/theme/active/glyph/muxapp
+
+        # Copy launcher files
+        rsync -av --exclude='.git' --exclude='README.md' --exclude='.github' --exclude='build' ./ package/mnt/mmc/MUOS/application/PyLauncher/
+
+        # Copy icon (assumes it's in project root with name pylauncher.png)
+        cp pylauncher.png package/opt/muos/default/MUOS/theme/active/glyph/muxapp/
+
+        # Create the final .muxzip
+        cd package
+        zip -r ../PyLauncher.muxzip .
+        cd ..
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        files: build/PyLauncher.muxapp
+        files: PyLauncher.muxzip
         token: ${{ secrets.GH_PAT }}
