@@ -1,28 +1,26 @@
-name: Build and Release MuxApp
+name: Attach .muxapp to Release
 
 on:
-  push:
-    tags:
-      - 'v*'  # Se activa cuando haces un tag tipo v1.0.0
+  release:
+    types: [created]
 
 jobs:
-  build-release:
+  build-and-upload:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create .muxapp package
+      - name: Create .muxapp archive
         run: |
-          mkdir build
-          zip -r build/PyLauncher.zip . -x "*.git*" "README.md"
+          mkdir -p build
+          zip -r build/PyLauncher.zip . -x "*.git*" "*README*" "*.github*"
           mv build/PyLauncher.zip build/PyLauncher.muxapp
 
-      - name: Create GitHub Release
+      - name: Upload .muxapp to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: build/PyLauncher.muxapp
-          overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
