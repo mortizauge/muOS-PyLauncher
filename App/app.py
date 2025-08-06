@@ -101,6 +101,23 @@ def load_browser_menu():
         else:
             gr.draw_end()
             sys.exit(0)
+    
+    elif input.key("L1"):
+        if selected_position > 0:
+            selected_position = max(0, selected_position - max_items_per_page)
+
+    elif input.key("R1"):
+        if selected_position < len(file_list) - 1:
+            selected_position = min(len(file_list) - 1, selected_position + max_items_per_page)
+
+    elif input.key("L2"):
+        if selected_position > 0:
+            selected_position = max(0, selected_position - 100)
+
+    elif input.key("R2"):
+        if selected_position < len(file_list) - 1:
+            selected_position = min(len(file_list) - 1, selected_position + 100)
+
 
     show_inspect_button = False
     if file_list[selected_position] != "<Empty>":
@@ -110,16 +127,7 @@ def load_browser_menu():
             if input.key("Y"):
                 inspect_script(selected_item_path)
                 skip_input_check = True
-
-    elif input.key("L1"):
-        selected_position = max(0, selected_position - max_items_per_page)
-    elif input.key("R1"):
-        selected_position = min(len(file_list) - 1, selected_position + max_items_per_page)
-    elif input.key("L2"):
-        selected_position = max(0, selected_position - 100)
-    elif input.key("R2"):
-        selected_position = min(len(file_list) - 1, selected_position + 100)
-
+				
     gr.draw_clear()
     gr.draw_rectangle_r([10, 40, 630, 440], 15, fill=gr.colorGrayD2, outline=None)
     gr.draw_text((320, 20), f"Browser: {current_path}", anchor="mm")
