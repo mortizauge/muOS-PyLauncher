@@ -15,9 +15,9 @@ bytes_per_pixel = 4
 screen_size = screen_width * screen_height * bytes_per_pixel
 
 fontFile = {}
-fontFile[15] = ImageFont.truetype("/mnt/mmc/MUOS/application/ROMDownloader/App/font/Lexend-Regular.ttf", 17)
-fontFile[13] = ImageFont.truetype("/mnt/mmc/MUOS/application/ROMDownloader/App/font/Lexend-Regular.ttf", 15)
-fontFile[11] = ImageFont.truetype("/mnt/mmc/MUOS/application/ROMDownloader/App/font/Lexend-Regular.ttf", 13)
+fontFile[15] = ImageFont.truetype("/mnt/mmc/MUOS/application/PyLauncher/App/font/Lexend-Regular.ttf", 17)
+fontFile[13] = ImageFont.truetype("/mnt/mmc/MUOS/application/PyLauncher/App/font/Lexend-Regular.ttf", 15)
+fontFile[11] = ImageFont.truetype("/mnt/mmc/MUOS/application/PyLauncher/App/font/Lexend-Regular.ttf", 13)
 colorBlue = "#bb7200"
 colorBlueD1 = "#7f4f00"
 colorGray = "#292929"
